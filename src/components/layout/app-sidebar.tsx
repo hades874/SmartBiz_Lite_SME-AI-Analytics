@@ -8,8 +8,6 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
-    SidebarGroup,
-    SidebarGroupLabel
 } from "@/components/ui/sidebar"
 import {
     LayoutDashboard,
@@ -55,7 +53,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     {navItems.map((item) => (
                         <SidebarMenuItem key={item.href}>
-                            <Link href={item.href}>
+                            <Link href={item.href} legacyBehavior passHref>
                                 <SidebarMenuButton
                                     isActive={pathname === item.href}
                                     tooltip={item.label}
@@ -69,23 +67,20 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarContent>
             <SidebarFooter>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Settings</SidebarGroupLabel>
-                    <SidebarMenu>
-                         <SidebarMenuItem>
-                            <Link href="/settings">
-                                <SidebarMenuButton
-                                    isActive={pathname === '/settings'}
-                                    tooltip="Settings"
-                                >
-                                    <Settings />
-                                    <span>Settings</span>
-                                </SidebarMenuButton>
-                            </Link>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroup>
-                <div className="p-2">
+                <SidebarMenu className="p-2">
+                     <SidebarMenuItem>
+                        <Link href="/settings" legacyBehavior passHref>
+                            <SidebarMenuButton
+                                isActive={pathname === '/settings'}
+                                tooltip="Settings"
+                            >
+                                <Settings />
+                                <span>Settings</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+                <div className="p-2 border-t border-sidebar-border">
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button variant="ghost" className="w-full justify-start h-auto p-2">
