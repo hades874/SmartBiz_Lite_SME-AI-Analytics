@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -10,11 +11,14 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useLanguage, strings } from "@/context/language-context";
 
 export default function CustomersPage() {
     const [loading, setLoading] = React.useState(false);
     const [result, setResult] = React.useState<CustomerSegmentationOutput | null>(null);
     const [error, setError] = React.useState<string | null>(null);
+    const { language } = useLanguage();
+    const t = strings[language];
 
     const handleAnalyzeCustomers = async () => {
         setLoading(true);
@@ -57,13 +61,13 @@ export default function CustomersPage() {
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Customer Insights</CardTitle>
-                    <CardDescription>Segment your customers and get retention insights.</CardDescription>
+                    <CardTitle>{t.customersTitle}</CardTitle>
+                    <CardDescription>{t.customersDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                      <Button onClick={handleAnalyzeCustomers} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Analyze Customers
+                        {t.analyzeCustomers}
                     </Button>
                 </CardContent>
             </Card>
@@ -83,19 +87,19 @@ export default function CustomersPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Customer List</CardTitle>
+                    <CardTitle>{t.customerList}</CardTitle>
                     <CardDescription>
-                        {result ? "Customer segments have been updated." : "Showing all customers."}
+                        {result ? t.customerListDescriptionWithSegments : t.customerListDescription}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Total Spent</TableHead>
-                                <TableHead>Last Purchase</TableHead>
-                                <TableHead>Segment</TableHead>
+                                <TableHead>{t.customerName}</TableHead>
+                                <TableHead>{t.totalSpent}</TableHead>
+                                <TableHead>{t.lastPurchase}</TableHead>
+                                <TableHead>{t.segment}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

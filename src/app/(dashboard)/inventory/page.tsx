@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage, strings } from "@/context/language-context";
 
 const formSchema = z.object({
     productName: z.string().min(2, "Product name is required"),
@@ -36,6 +38,8 @@ export default function InventoryPage() {
     const [isFormOpen, setIsFormOpen] = React.useState(false);
     const [editingItem, setEditingItem] = React.useState<InventoryItem | null>(null);
     const { toast } = useToast();
+    const { language } = useLanguage();
+    const t = strings[language];
 
     const form = useForm<InventoryFormValues>({
         resolver: zodResolver(formSchema),
@@ -125,13 +129,13 @@ export default function InventoryPage() {
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Inventory Management</CardTitle>
-                    <CardDescription>Manage your stock and get AI-powered reorder recommendations.</CardDescription>
+                    <CardTitle>{t.inventoryTitle}</CardTitle>
+                    <CardDescription>{t.inventoryDescription}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center gap-4">
                      <Dialog open={isFormOpen} onOpenChange={handleOpenChange}>
                         <DialogTrigger asChild>
-                            <Button type="button"><PlusCircle className="mr-2"/> Add New Item</Button>
+                            <Button type="button"><PlusCircle className="mr-2"/> {t.addNewItem}</Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
@@ -238,15 +242,15 @@ export default function InventoryPage() {
                     </Dialog>
                     <Button onClick={handleGetRecommendations} disabled={loading} type="button" variant="outline">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Get AI Recommendations
+                        {t.getAIRecommendations}
                     </Button>
                 </CardContent>
             </Card>
 
              <Card>
                 <CardHeader>
-                    <CardTitle>Current Inventory</CardTitle>
-                    <CardDescription>An overview of all items in your inventory.</CardDescription>
+                    <CardTitle>{t.currentInventory}</CardTitle>
+                    <CardDescription>{t.currentInventoryDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                      <Table>
@@ -312,7 +316,7 @@ export default function InventoryPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <PackageCheck /> Reorder Recommendations
+                                    <PackageCheck /> {t.aiRecommendations}
                                 </CardTitle>
                                 <CardDescription>AI suggestions to optimize your stock levels.</CardDescription>
                             </CardHeader>
@@ -349,7 +353,7 @@ export default function InventoryPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <BellRing /> Low Stock Alerts
+                                    <BellRing /> {t.lowStock} Alerts
                                 </CardTitle>
                                 <CardDescription>Items that need immediate attention.</CardDescription>
                             </CardHeader>

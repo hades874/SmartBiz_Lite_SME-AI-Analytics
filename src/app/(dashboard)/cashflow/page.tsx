@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { mockSales } from "@/lib/data";
 import type { Payment } from "@/types";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useLanguage, strings } from "@/context/language-context";
 
 function transformSalesToPayments(sales: any[]): Payment[] {
     const payments: Payment[] = [];
@@ -58,6 +60,8 @@ export default function CashflowPage() {
     const [loading, setLoading] = React.useState(false);
     const [result, setResult] = React.useState<CashFlowOutput | null>(null);
     const [error, setError] = React.useState<string | null>(null);
+    const { language } = useLanguage();
+    const t = strings[language];
 
     const handleTrackCashFlow = async () => {
         setLoading(true);
@@ -78,13 +82,13 @@ export default function CashflowPage() {
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Cash Flow Analytics</CardTitle>
-                    <CardDescription>Track your income, expenses, and cash flow projections.</CardDescription>
+                    <CardTitle>{t.cashflowTitle}</CardTitle>
+                    <CardDescription>{t.cashflowDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Button onClick={handleTrackCashFlow} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Analyze Cash Flow
+                        {t.analyzeCashFlow}
                     </Button>
                 </CardContent>
             </Card>
@@ -106,7 +110,7 @@ export default function CashflowPage() {
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                      <Card>
                         <CardHeader>
-                            <CardTitle>Current Cash Position</CardTitle>
+                            <CardTitle>{t.currentCashPosition}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-3xl font-bold">৳{result.currentCashPosition.toLocaleString()}</p>
@@ -114,7 +118,7 @@ export default function CashflowPage() {
                     </Card>
                      <Card>
                         <CardHeader>
-                            <CardTitle>30-Day Projection</CardTitle>
+                            <CardTitle>{t.thirtyDayProjection}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-3xl font-bold">৳{result.thirtyDayProjection.toLocaleString()}</p>
@@ -122,7 +126,7 @@ export default function CashflowPage() {
                     </Card>
                     <Card className="lg:col-span-1">
                         <CardHeader>
-                            <CardTitle>Upcoming Shortfalls</CardTitle>
+                            <CardTitle>{t.upcomingShortfalls}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p>{result.upcomingShortfalls}</p>
@@ -130,7 +134,7 @@ export default function CashflowPage() {
                     </Card>
                     <Card className="md:col-span-2">
                         <CardHeader>
-                            <CardTitle>Payment Cycle Analysis</CardTitle>
+                            <CardTitle>{t.paymentCycleAnalysis}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p>{result.paymentCycleAnalysis}</p>
@@ -138,7 +142,7 @@ export default function CashflowPage() {
                     </Card>
                     <Card className="md:col-span-2 lg:col-span-3">
                         <CardHeader>
-                            <CardTitle>Expense Pattern Identification</CardTitle>
+                            <CardTitle>{t.expensePatternIdentification}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p>{result.expensePatternIdentification}</p>

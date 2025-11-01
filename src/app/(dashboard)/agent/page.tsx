@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -11,6 +12,7 @@ import { askBusinessAgent } from '@/ai/flows/business-agent';
 import { mockSales, mockInventory, mockCustomers } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { useLanguage, strings } from '@/context/language-context';
 
 interface Message {
     id: string;
@@ -25,6 +27,8 @@ export default function AgentPage() {
     const [error, setError] = useState<string | null>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const userAvatar = PlaceHolderImages.find(p => p.id === 'avatar-1');
+    const { language } = useLanguage();
+    const t = strings[language];
 
     useEffect(() => {
         // Scroll to the bottom when messages change
@@ -39,9 +43,9 @@ export default function AgentPage() {
      useEffect(() => {
         // Initial greeting from the AI
         setMessages([
-            { id: 'init', text: "Hello! I'm SmartBiz Lite AI. How can I help you analyze your business today? You can ask me about sales, inventory, customers, or for general advice.", sender: 'ai' }
+            { id: 'init', text: t.agentInitialMessage, sender: 'ai' }
         ]);
-    }, []);
+    }, [t.agentInitialMessage]);
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,7 +68,7 @@ export default function AgentPage() {
             setMessages(prev => [...prev, aiMessage]);
         } catch (err: any) {
             setError(err.message || "Sorry, I couldn't process that request.");
-            const errorMessage: Message = { id: `err-${Date.now()}`, text: "Sorry, I'm having trouble connecting. Please try again later.", sender: 'ai' };
+            const errorMessage: Message = { id: `err-${Date.now()}`, text: t.agentErrorConnecting, sender: 'ai' };
             setMessages(prev => [...prev, errorMessage]);
         } finally {
             setLoading(false);
@@ -75,8 +79,8 @@ export default function AgentPage() {
         <div className="h-[calc(100vh-100px)] flex flex-col">
             <Card className="flex-1 flex flex-col">
                 <CardHeader>
-                    <CardTitle>AI Business Agent</CardTitle>
-                    <CardDescription>Chat with your AI assistant to get business insights and suggestions.</CardDescription>
+                    <CardTitle>{t.agentTitle}</CardTitle>
+                    <CardDescription>{t.agentDescription}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-hidden">
                     <ScrollArea className="h-full" ref={scrollAreaRef}>
@@ -125,14 +129,14 @@ export default function AgentPage() {
                 <CardFooter className="pt-6 border-t">
                     {error && (
                         <Alert variant="destructive" className="mb-4">
-                            <AlertTitle>Request Failed</AlertTitle>
+                            <AlertTitle>{t.agentRequestFailed}</AlertTitle>
                             <AlertDescription>{error}</AlertDescription>
                         </Alert>
                     )}
                     <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
                         <Input
                             id="message"
-                            placeholder="Ask about sales, inventory, or customers..."
+                            placeholder={t.agentInputPlaceholder}
                             className="flex-1"
                             autoComplete="off"
                             value={input}

@@ -1,3 +1,4 @@
+
 'use client'
 import {
     Sidebar,
@@ -118,7 +119,7 @@ export function AppSidebar() {
                                      <Link href="/">
                                         <Button variant="ghost" className="w-full justify-start">
                                             <LogOut className="mr-2 h-4 w-4"/>
-                                            Logout
+                                            {t.logout}
                                         </Button>
                                     </Link>
                                 </SidebarMenuItem>

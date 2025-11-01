@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,11 +9,14 @@ import { Loader2, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage, strings } from "@/context/language-context";
 
 export default function ForecastPage() {
     const [loading, setLoading] = React.useState(false);
     const [result, setResult] = React.useState<SalesForecastingOutput | null>(null);
     const [error, setError] = React.useState<string | null>(null);
+    const { language } = useLanguage();
+    const t = strings[language];
 
     const handleGenerateForecast = async () => {
         setLoading(true);
@@ -58,13 +62,13 @@ export default function ForecastPage() {
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Sales Forecasting</CardTitle>
-                    <CardDescription>Use AI to predict future sales and identify trends based on your historical data.</CardDescription>
+                    <CardTitle>{t.forecastTitle}</CardTitle>
+                    <CardDescription>{t.forecastDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Button onClick={handleGenerateForecast} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Generate 30-Day Forecast
+                        {t.generate30DayForecast}
                     </Button>
                 </CardContent>
             </Card>
@@ -87,17 +91,17 @@ export default function ForecastPage() {
                     <div className="lg:col-span-2">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Product Forecast</CardTitle>
-                                <CardDescription>Predicted sales for the next 30 days.</CardDescription>
+                                <CardTitle>{t.productForecast}</CardTitle>
+                                <CardDescription>{t.productForecastDescription}</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead>Product</TableHead>
-                                            <TableHead>Predicted Sales</TableHead>
-                                            <TableHead>Confidence</TableHead>
-                                            <TableHead>Trend</TableHead>
+                                            <TableHead>{t.product}</TableHead>
+                                            <TableHead>{t.predictedSales}</TableHead>
+                                            <TableHead>{t.confidence}</TableHead>
+                                            <TableHead>{t.trend}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -124,7 +128,7 @@ export default function ForecastPage() {
                     <div className="space-y-6 lg:col-span-1">
                          <Card>
                             <CardHeader>
-                                <CardTitle>AI Insights</CardTitle>
+                                <CardTitle>{t.aiInsights}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-2 list-disc list-inside text-sm">
@@ -136,7 +140,7 @@ export default function ForecastPage() {
                         </Card>
                         <Card>
                             <CardHeader>
-                                <CardTitle>AI Recommendations</CardTitle>
+                                <CardTitle>{t.aiRecommendations}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-2 list-disc list-inside text-sm">
