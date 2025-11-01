@@ -90,17 +90,14 @@ export function Header() {
                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="text-muted-foreground">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                                <path d="M4 11a8 8 0 0 1 16 0" />
-                                <path d="M4 11v-1a2 2 0 0 1 2-2h4" />
-                                <path d="M10 9V4" />
-                                <path d="M5.5 11h9" />
-                                <path d="M12 11c-2.67 0-4.9.43-6.83.94" />
-                                <path d="m14 20 5-10-5-10" />
-                                <path d="M14 20h5" />
-                                <path d="M14 10h5" />
-                                <path d="M14 0h5" />
-                            </svg>
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12.25 4.75h-5.5a2 2 0 0 0-2 2v10.5a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-5.5"/>
+                                <path d="m11.5 5.5-5 5"/>
+                                <path d="m18.5 12.5-5-5"/>
+                                <path d="M16 4.75h4.5v4.5"/>
+                                <path d="M9.75 4.75c.42.04.83.13 1.22.27.5.18.97.42 1.4.7.42.28.82.61 1.16.98.34.37.64.78.9 1.23.25.45.44.93.57 1.45"/>
+                                <path d="M21.25 10.75c-.04.42-.13.83-.27 1.22-.18.5-.42.97-.7 1.4-.28.42-.61.82-.98 1.16-.37.34-.78.64-1.23.9-.45.25-.93.44-1.45.57"/>
+                             </svg>
                             <span className="sr-only">Toggle language</span>
                         </Button>
                     </DropdownMenuTrigger>
