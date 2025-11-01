@@ -39,7 +39,7 @@ export default function InventoryPage() {
                     <CardDescription>Manage your stock levels and get AI-powered reorder recommendations.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Button onClick={handleGetRecommendations} disabled={loading}>
+                    <Button onClick={handleGetRecommendations} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         Get AI Recommendations
                     </Button>

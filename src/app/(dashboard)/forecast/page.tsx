@@ -62,7 +62,7 @@ export default function ForecastPage() {
                     <CardDescription>Use AI to predict future sales and identify trends based on your historical data.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Button onClick={handleGenerateForecast} disabled={loading}>
+                    <Button onClick={handleGenerateForecast} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         Generate 30-Day Forecast
                     </Button>

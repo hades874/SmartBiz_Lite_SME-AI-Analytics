@@ -61,7 +61,7 @@ export default function CustomersPage() {
                     <CardDescription>Segment your customers and get retention insights.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                     <Button onClick={handleAnalyzeCustomers} disabled={loading}>
+                     <Button onClick={handleAnalyzeCustomers} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         Analyze Customers
                     </Button>

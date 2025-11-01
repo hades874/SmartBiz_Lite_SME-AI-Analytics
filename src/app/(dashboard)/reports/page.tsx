@@ -52,7 +52,7 @@ export default function ReportsPage() {
                             <SelectItem value="monthly">Monthly Report</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button onClick={handleGenerateReport} disabled={loading}>
+                    <Button onClick={handleGenerateReport} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         Generate Report
                     </Button>

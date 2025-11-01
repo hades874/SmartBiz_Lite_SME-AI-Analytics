@@ -82,7 +82,7 @@ export default function CashflowPage() {
                     <CardDescription>Track your income, expenses, and cash flow projections.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Button onClick={handleTrackCashFlow} disabled={loading}>
+                    <Button onClick={handleTrackCashFlow} disabled={loading} type="button">
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         Analyze Cash Flow
                     </Button>
