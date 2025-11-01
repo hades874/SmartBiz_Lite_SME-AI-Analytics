@@ -20,6 +20,10 @@ export interface SalesRecord {
     unit: string;
     reorderLevel: number;
     status: 'ok' | 'low' | 'overstock';
+    costPrice: number;
+    sellingPrice: number;
+    category?: string;
+    lastRestocked?: string;
   }
   
   export interface Payment {
