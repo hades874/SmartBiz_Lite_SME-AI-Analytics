@@ -10,6 +10,7 @@ import { PlaceHolderImages } from "@/lib/placeholder-images"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import React from "react";
 
 
 function toTitleCase(str: string) {
