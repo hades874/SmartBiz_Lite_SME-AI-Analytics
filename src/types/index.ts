@@ -10,7 +10,7 @@ export interface SalesRecord {
     customerId?: string;
     paymentStatus: 'paid' | 'pending' | 'partial';
     category?: string;
-    customerAvatarUrl: string;
+    customerAvatarUrl?: string;
   }
   
   export interface InventoryItem {

@@ -1,5 +1,3 @@
-
-
 'use client'
 import {
     Sidebar,
@@ -9,6 +7,7 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
+    SidebarSeparator,
 } from "@/components/ui/sidebar"
 import {
     LayoutDashboard,
@@ -20,7 +19,8 @@ import {
     Settings,
     Briefcase,
     LogOut,
-    ChevronDown
+    ChevronDown,
+    Bot,
 } from "lucide-react"
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -68,7 +68,20 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu className="p-2">
+                 <SidebarMenu className="p-2">
+                     <SidebarMenuItem>
+                        <Link href="/agent">
+                            <SidebarMenuButton
+                                isActive={pathname === '/agent'}
+                                tooltip="AI Agent"
+                                className="bg-accent/20 text-accent-foreground hover:bg-accent/30 data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
+                            >
+                                <Bot />
+                                <span>AI Agent</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                    <SidebarSeparator />
                     <SidebarMenuItem>
                         <Link href="/settings">
                             <SidebarMenuButton
@@ -101,7 +114,7 @@ export function AppSidebar() {
                         <PopoverContent className="w-56 mb-2 ml-4">
                             <SidebarMenu>
                                 <SidebarMenuItem>
-                                     <Link href="/" className="w-full">
+                                     <Link href="/">
                                         <Button variant="ghost" className="w-full justify-start">
                                             <LogOut className="mr-2 h-4 w-4"/>
                                             Logout

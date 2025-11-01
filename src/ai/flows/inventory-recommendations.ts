@@ -10,21 +10,10 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-
-const InventoryItemSchema = z.object({
-  productId: z.string().describe('The unique identifier for the product.'),
-  productName: z.string().describe('The name of the product.'),
-  currentStock: z.number().describe('The current stock level of the product.'),
-  unit: z.string().describe('The unit of measurement for the product (e.g., kg, piece).'),
-  reorderLevel: z.number().describe('The reorder level for the product.'),
-  costPrice: z.number().describe('The cost price of the product.'),
-  sellingPrice: z.number().describe('The selling price of the product.'),
-  category: z.string().optional().describe('The product category.'),
-  lastRestocked: z.string().optional().describe('The date the product was last restocked.'),
-});
+import { inventoryDataSchema } from '@/lib/schemas';
 
 const InventoryRecommendationsInputSchema = z.object({
-  inventoryItems: z.array(InventoryItemSchema).describe('An array of inventory items.'),
+  inventoryItems: z.array(inventoryDataSchema).describe('An array of inventory items.'),
 });
 
 export type InventoryRecommendationsInput = z.infer<typeof InventoryRecommendationsInputSchema>;
@@ -57,11 +46,11 @@ const inventoryRecommendationsPrompt = ai.definePrompt({
 
   Inventory Data:
   {{#each inventoryItems}}
-  - Product: {{productName}}, Current Stock: {{currentStock}} {{unit}}, Reorder Level: {{reorderLevel}} {{unit}}, Cost Price: {{costPrice}}, Selling Price: {{sellingPrice}}
+  - Product ID: {{id}}, Product: {{productName}}, Current Stock: {{currentStock}} {{unit}}, Reorder Level: {{reorderLevel}} {{unit}}, Cost Price: {{costPrice}}, Selling Price: {{sellingPrice}}
   {{/each}}
 
   Recommendations:
-  - Provide a reorder quantity for each product that is below its reorder level.
+  - Provide a reorder quantity for each product that is below its reorder level. The ID must be returned as 'productId'.
   - Explain the reasoning behind each reorder recommendation.
 
   Alerts:

@@ -328,7 +328,7 @@ export default function InventoryPage() {
                                         </TableHeader>
                                         <TableBody>
                                             {result.recommendations.map((rec) => {
-                                                const product = getProductDetails(rec.productId);
+                                                const product = getProductDetails(rec.productId || "");
                                                 return (
                                                     <TableRow key={rec.productId}>
                                                         <TableCell className="font-medium">{product?.productName || rec.productId}</TableCell>
