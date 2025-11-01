@@ -101,10 +101,12 @@ export function AppSidebar() {
                         <PopoverContent className="w-56 mb-2 ml-4">
                             <SidebarMenu>
                                 <SidebarMenuItem>
-                                    <Button variant="ghost" className="w-full justify-start">
-                                        <LogOut className="mr-2 h-4 w-4"/>
-                                        Logout
-                                    </Button>
+                                     <Link href="/" className="w-full">
+                                        <Button variant="ghost" className="w-full justify-start">
+                                            <LogOut className="mr-2 h-4 w-4"/>
+                                            Logout
+                                        </Button>
+                                    </Link>
                                 </SidebarMenuItem>
                             </SidebarMenu>
                         </PopoverContent>
