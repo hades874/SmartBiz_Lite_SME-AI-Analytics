@@ -108,18 +108,3 @@ export const mockInventory: InventoryItem[] = [
         status: 'overstock',
     }
 ];
-
-export const mockSalesDataForChart = [
-    { month: "January", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "February", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "March", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "April", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "May", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "June", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "July", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "August", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "September", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "October", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "November", total: Math.floor(Math.random() * 5000) + 1000 },
-    { month: "December", total: Math.floor(Math.random() * 5000) + 1000 },
-];

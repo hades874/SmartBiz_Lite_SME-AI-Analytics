@@ -1,4 +1,5 @@
 "use client"
+import React from 'react';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 
 import {
@@ -9,7 +10,21 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
-import { mockSalesDataForChart } from "@/lib/data"
+
+const generateMockSalesData = () => [
+    { month: "January", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "February", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "March", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "April", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "May", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "June", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "July", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "August", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "September", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "October", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "November", total: Math.floor(Math.random() * 5000) + 1000 },
+    { month: "December", total: Math.floor(Math.random() * 5000) + 1000 },
+];
 
 
 const chartConfig = {
@@ -20,6 +35,7 @@ const chartConfig = {
   }
 
 export function SalesChart() {
+  const mockSalesDataForChart = React.useMemo(() => generateMockSalesData(), []);
   return (
     <Card>
         <CardHeader>
