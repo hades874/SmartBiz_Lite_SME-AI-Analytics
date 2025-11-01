@@ -1,0 +1,6 @@
+id,name,email,firstPurchase,lastPurchase,totalPurchases,totalSpent,averageOrderValue,phone,segment
+c1,Rahim Islam,rahim@example.com,2024-01-10,2024-07-22,5,25000,5000,,
+c2,Fatima Ahmed,fatima@example.com,2024-05-20,2024-07-22,2,16000,8000,,
+c3,Karim Chowdhury,karim@example.com,2023-11-05,2024-03-15,8,45000,5625,,
+c4,Ayesha Khan,ayesha@example.com,2024-02-18,2024-07-21,12,95000,7916,,
+c5,Jamil Hasan,jamil@example.com,2024-06-01,2024-06-20,3,11000,3667,,

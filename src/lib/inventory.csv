@@ -1,0 +1,6 @@
+id,productName,currentStock,unit,reorderLevel,costPrice,sellingPrice,status,category,lastRestocked
+p1,Premium Wireless Mouse,15,pcs,10,1800,2500,ok,,
+p2,Mechanical Keyboard,5,pcs,8,6000,8000,low,,
+p3,USB-C Hub,50,pcs,20,1000,1500,ok,,
+p4,4K Webcam,8,pcs,5,5000,6500,ok,,
+p5,Ergonomic Chair,30,pcs,15,12000,18000,overstock,,
