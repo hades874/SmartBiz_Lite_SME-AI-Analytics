@@ -2,7 +2,6 @@
 'use client';
 import { DollarSign, Package, Users, CreditCard } from 'lucide-react'
 import { StatCard } from '@/components/dashboard/stat-card'
-import { SalesChart } from '@/components/dashboard/sales-chart'
 import { RecentSales } from '@/components/dashboard/recent-sales'
 import { InventoryAlerts } from '@/components/dashboard/inventory-alerts'
 import { useLanguage, strings } from '@/context/language-context';
@@ -87,14 +86,9 @@ export default function DashboardPage() {
                 Icon={CreditCard}
             />
         </div>
-        <div className="grid gap-4 md:gap-6 lg:grid-cols-2 xl:grid-cols-3">
-             <div className="xl:col-span-2">
-                <SalesChart salesData={sales} />
-             </div>
-             <div className="space-y-4 md:space-y-6">
-                <RecentSales sales={sales.slice(0,5)} />
-                <InventoryAlerts inventory={inventory} />
-             </div>
+        <div className="grid gap-4 md:gap-6 md:grid-cols-2">
+            <RecentSales sales={sales.slice(0,5)} />
+            <InventoryAlerts inventory={inventory} />
         </div>
     </div>
   )
