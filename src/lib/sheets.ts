@@ -1,3 +1,4 @@
+
 'use server';
 
 import { google } from 'googleapis';
@@ -34,7 +35,7 @@ const objectsToRows = (data: any[], headers: string[]) => {
 
 // INVENTORY FUNCTIONS
 const INVENTORY_SHEET_NAME = 'Inventory';
-const INVENTORY_HEADERS = ['id', 'productName', 'currentStock', 'unit', 'reorderLevel', 'status', 'costPrice', 'sellingPrice', 'category', 'lastRestocked'];
+const INVENTORY_HEADERS = ['id', 'productName', 'currentStock', 'unit', 'reorderLevel', 'costPrice', 'sellingPrice', 'status', 'category', 'lastRestocked'];
 
 export async function getInventory(): Promise<InventoryItem[]> {
   try {
@@ -46,16 +47,15 @@ export async function getInventory(): Promise<InventoryItem[]> {
     const rows = response.data.values;
     if (!rows) return [];
     
-    const headers = INVENTORY_HEADERS;
     return rows.map(row => ({
       id: row[0],
       productName: row[1],
       currentStock: parseInt(row[2], 10),
       unit: row[3],
       reorderLevel: parseInt(row[4], 10),
-      status: row[5] as 'ok' | 'low' | 'overstock',
-      costPrice: parseFloat(row[6]),
-      sellingPrice: parseFloat(row[7]),
+      costPrice: parseFloat(row[5]),
+      sellingPrice: parseFloat(row[6]),
+      status: row[7] as 'ok' | 'low' | 'overstock',
       category: row[8],
       lastRestocked: row[9],
     }));
