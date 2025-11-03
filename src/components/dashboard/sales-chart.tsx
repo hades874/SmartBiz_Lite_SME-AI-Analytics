@@ -30,6 +30,10 @@ export function SalesChart({ salesData }: SalesChartProps) {
   const { language } = useLanguage();
   const t = strings[language];
 
+  const getMonthIndex = (monthName: string) => {
+    return new Date(`${monthName} 1, 2000`).getMonth();
+  }
+
   const monthlySalesData = React.useMemo(() => {
     const monthlyTotals: { [key: string]: number } = {};
     const twelveMonthsAgo = subMonths(new Date(), 11);
@@ -58,11 +62,6 @@ export function SalesChart({ salesData }: SalesChartProps) {
     }).sort((a,b) => new Date(a.year, getMonthIndex(a.month)).getTime() - new Date(b.year, getMonthIndex(b.month)).getTime());
   }, [salesData]);
   
-  const getMonthIndex = (monthName: string) => {
-    return new Date(`${monthName} 1, 2000`).getMonth();
-  }
-
-
   return (
     <Card>
         <CardHeader>
