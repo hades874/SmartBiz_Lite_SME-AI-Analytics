@@ -55,7 +55,7 @@ const salesForecastingPrompt = ai.definePrompt({
   name: 'salesForecastingPrompt',
   input: {schema: SalesForecastingInputSchema},
   output: {schema: SalesForecastingOutputSchema},
-  prompt: `You are a business analyst for SMEs. Analyze the provided sales data and provide a 30-day sales forecast for each product.
+  prompt: `You are a business analyst for SMEs. Analyze the provided sales data and provide a 30-day sales forecast for each product. Your response must be in the Bangla language.
 
 Sales Data (last 90 days):
 {{json salesData}}

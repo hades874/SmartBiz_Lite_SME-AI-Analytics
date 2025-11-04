@@ -4,7 +4,7 @@
  * @fileOverview Provides smart inventory recommendations and low stock alerts.
  *
  * - getInventoryRecommendations - A function that generates inventory reorder recommendations.
- * - InventoryRecommendationsInput - The input type for the getInventoryRecommendations function.
+ * - InventoryRecommendationsInput - The input type for the getInventoryRecommendations functionूं
  * - InventoryRecommendationsOutput - The return type for the getInventoryRecommendations function.
  */
 
@@ -41,7 +41,7 @@ const inventoryRecommendationsPrompt = ai.definePrompt({
   name: 'inventoryRecommendationsPrompt',
   input: {schema: InventoryRecommendationsInputSchema},
   output: {schema: InventoryRecommendationsOutputSchema},
-  prompt: `You are an AI assistant helping a distributor manage their inventory.
+  prompt: `You are an AI assistant helping a distributor manage their inventory. Your response must be in the Bangla language.
   Analyze the following inventory data and provide reorder recommendations and low stock alerts.
 
   Inventory Data:

@@ -1,10 +1,10 @@
+'use server';
 // A customer segmentation AI agent.
 //
 // - customerSegmentation - A function that handles the customer segmentation process.
 // - CustomerSegmentationInput - The input type for the customerSegmentation function.
 // - CustomerSegmentationOutput - The return type for the customerSegmentation function.
 
-'use server';
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
@@ -42,7 +42,7 @@ const prompt = ai.definePrompt({
   name: 'customerSegmentationPrompt',
   input: {schema: CustomerSegmentationInputSchema},
   output: {schema: CustomerSegmentationOutputSchema},
-  prompt: `You are an expert business analyst specializing in customer segmentation.
+  prompt: `You are an expert business analyst specializing in customer segmentation. Your response must be in the Bangla language.
 
 Analyze the provided customer data and segment each customer into one of the following categories:
 - high-value: Customers with high total spending and recent purchase activity.

@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
-  prompt: `You are a business analyst for SMEs. Generate a business performance report based on the following data for the specified period.\n\nReport Period: {{{reportPeriod}}}\n\nSales Data: {{{salesData}}}\n\nInventory Data: {{{inventoryData}}}\n\nPayment Data: {{{paymentData}}}\n\nCustomer Data: {{{customerData}}}\n\nProvide a concise and informative report including key metrics, action items, and recommendations. The report should be well structured and easy to understand.\n\nFormat the output as a string.
+  prompt: `You are a business analyst for SMEs. Generate a business performance report based on the following data for the specified period. Your response must be in the Bangla language.\n\nReport Period: {{{reportPeriod}}}\n\nSales Data: {{{salesData}}}\n\nInventory Data: {{{inventoryData}}}\n\nPayment Data: {{{paymentData}}}\n\nCustomer Data: {{{customerData}}}\n\nProvide a concise and informative report including key metrics, action items, and recommendations. The report should be well structured and easy to understand.\n\nFormat the output as a string.
 `,
 });
 
