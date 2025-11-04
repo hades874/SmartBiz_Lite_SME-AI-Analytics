@@ -11,9 +11,16 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 import { useLanguage, strings } from '@/context/language-context';
 import { SalesRecord } from '@/types';
-import { format, subMonths, getMonth, getYear, parseISO } from 'date-fns';
+import { getMonth, getYear, parseISO } from 'date-fns';
 import { formatCurrency, toBengaliNumber } from '@/lib/utils';
 
 interface SalesChartProps {
@@ -30,6 +37,13 @@ const chartConfig = {
 export function SalesChart({ salesData }: SalesChartProps) {
   const { language } = useLanguage();
   const t = strings[language];
+
+  const availableYears = React.useMemo(() => {
+    const years = new Set(salesData.map(sale => getYear(parseISO(sale.date))));
+    return Array.from(years).sort((a, b) => b - a);
+  }, [salesData]);
+
+  const [selectedYear, setSelectedYear] = React.useState<number>(availableYears[0] || new Date().getFullYear());
   
   const getMonthName = (monthIndex: number) => {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -41,65 +55,76 @@ export function SalesChart({ salesData }: SalesChartProps) {
     return monthNames[monthIndex];
   }
   
-  const getMonthIndex = (monthName: string) => {
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const bnMonthNames = ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"];
-    let index = monthNames.indexOf(monthName);
-    if (index === -1) {
-        index = bnMonthNames.indexOf(monthName);
-    }
-    return index;
-  }
-
   const monthlySalesData = React.useMemo(() => {
-    const monthlyTotals: { [key: string]: number } = {};
-
-    // Initialize last 12 months with 0 sales
-    const currentDate = new Date();
-    for (let i = 11; i >= 0; i--) {
-        const d = subMonths(currentDate, i);
-        const month = getMonth(d);
-        const year = getYear(d);
-        const key = `${year}-${month}`;
-        monthlyTotals[key] = 0;
-    }
+    const months = Array.from({ length: 12 }, (_, i) => ({
+        month: getMonthName(i),
+        total: 0,
+    }));
 
     salesData.forEach(sale => {
         try {
             const saleDate = parseISO(sale.date);
-            const month = getMonth(saleDate);
             const year = getYear(saleDate);
-            const key = `${year}-${month}`;
-            if (key in monthlyTotals) {
-                monthlyTotals[key] += sale.totalAmount;
+            if (year === selectedYear) {
+                const monthIndex = getMonth(saleDate);
+                months[monthIndex].total += sale.totalAmount;
             }
         } catch (e) {
             console.error(`Invalid date format for sale ID ${sale.id}: ${sale.date}`);
         }
     });
 
-    return Object.keys(monthlyTotals).map(key => {
-        const [year, monthIndex] = key.split('-').map(Number);
-        return {
-            month: getMonthName(monthIndex),
-            year: year,
-            total: monthlyTotals[key]
-        }
-    });
-  }, [salesData, language]);
+    return months;
+  }, [salesData, selectedYear, language]);
+
+  const yAxisTicks = React.useMemo(() => {
+    const maxSale = Math.max(...monthlySalesData.map(d => d.total));
+    const topTick = Math.ceil(maxSale / 5000) * 5000;
+    const ticks = [];
+    for (let i = 0; i <= topTick; i += 5000) {
+        ticks.push(i);
+    }
+    if (ticks.length === 1 && ticks[0] === 0) return [0, 5000, 10000]; // Provide a default scale if no sales
+    return ticks;
+  }, [monthlySalesData]);
   
   return (
     <Card>
-        <CardHeader>
-            <CardTitle>{t.salesOverview}</CardTitle>
-            <CardDescription>{t.salesOverviewDescription}</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+                <CardTitle>{t.salesOverview}</CardTitle>
+                <CardDescription>{t.salesOverviewDescription}</CardDescription>
+            </div>
+             <Select
+                value={String(selectedYear)}
+                onValueChange={(value) => setSelectedYear(Number(value))}
+            >
+                <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Select year" />
+                </SelectTrigger>
+                <SelectContent>
+                {availableYears.map((year) => (
+                    <SelectItem key={year} value={String(year)}>
+                        {language === 'bn' ? toBengaliNumber(year) : year}
+                    </SelectItem>
+                ))}
+                </SelectContent>
+            </Select>
         </CardHeader>
         <CardContent>
              <ChartContainer config={chartConfig} className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={monthlySalesData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} fontSize={12} />
-                        <YAxis tickFormatter={(value) => language === 'bn' ? `৳${toBengaliNumber(value/1000)}k` : `৳${value / 1000}k`} tickLine={false} axisLine={false} tickMargin={8} fontSize={12} />
+                        <YAxis
+                            ticks={yAxisTicks}
+                            domain={[0, yAxisTicks[yAxisTicks.length -1]]}
+                            tickFormatter={(value) => language === 'bn' ? `৳${toBengaliNumber(value/1000)}k` : `৳${value / 1000}k`} 
+                            tickLine={false} 
+                            axisLine={false} 
+                            tickMargin={8} 
+                            fontSize={12} 
+                        />
                         <Tooltip
                             cursor={false}
                             content={<ChartTooltipContent 

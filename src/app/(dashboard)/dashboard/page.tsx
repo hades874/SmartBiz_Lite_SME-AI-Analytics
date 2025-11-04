@@ -88,11 +88,11 @@ export default function DashboardPage() {
                 Icon={CreditCard}
             />
         </div>
-        <div className="grid gap-4 md:gap-6 md:grid-cols-5">
-            <div className="md:col-span-3">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="lg:col-span-3">
               <SalesChart salesData={sales} />
             </div>
-            <div className="md:col-span-2 grid gap-4">
+            <div className="lg:col-span-2 grid gap-4 md:gap-6 content-start">
                 <RecentSales sales={sales.slice(0,5)} />
                 <InventoryAlerts inventory={inventory} />
             </div>
