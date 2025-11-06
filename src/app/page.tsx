@@ -15,6 +15,7 @@ import { useLanguage, strings } from '@/context/language-context';
 import { getCredentials, addUser, updatePassword } from '@/lib/sheets';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { UserCredentials } from '@/types';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 type AuthMode = 'login' | 'signup-admin' | 'signup-user' | 'forgot-password-email' | 'forgot-password-reset';
 
@@ -27,6 +28,7 @@ export default function LoginPage() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
   const t = strings[language];
 
@@ -36,10 +38,16 @@ export default function LoginPage() {
   useEffect(() => {
     localStorage.removeItem('userEmail');
   }, []);
+  
+  useEffect(() => {
+    // Clear errors when switching modes
+    setError(null);
+  }, [authMode, isDialogOpen])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     
     const loginAndRedirect = (userEmail: string, message: string) => {
         localStorage.setItem('userEmail', userEmail);
@@ -58,30 +66,32 @@ export default function LoginPage() {
       if (user) {
         loginAndRedirect(user.email, t.welcomeBack);
       } else {
-        toast({ variant: 'destructive', title: t.loginFailed, description: t.invalidCredentials });
+        setError(t.invalidCredentials);
         setLoading(false);
       }
     } catch (error: any) {
-      toast({ variant: 'destructive', title: t.loginFailed, description: error.message });
+      setError(error.message);
       setLoading(false);
     }
   };
 
-  const handleAdminAuth = (e: React.FormEvent) => {
+  const handleAdminAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (email === 'admin@gmail.com' && password === 'admin') {
       setAuthMode('signup-user');
       setEmail('');
       setPassword('');
     } else {
-      toast({ variant: 'destructive', title: t.adminAuthFailed, description: t.invalidAdminCredentials });
+      setError(t.invalidAdminCredentials);
     }
   };
 
   const handleUserSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (password !== confirmPassword) {
-      toast({ variant: 'destructive', title: t.signupFailed, description: t.passwordsDoNotMatch });
+      setError(t.passwordsDoNotMatch);
       return;
     }
     setLoading(true);
@@ -90,7 +100,7 @@ export default function LoginPage() {
       toast({ title: t.signupSuccess, description: t.userCreatedSuccessfully });
       resetAndCloseDialog();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: t.signupFailed, description: error.message });
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -99,15 +109,16 @@ export default function LoginPage() {
   const handleForgotPasswordEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     try {
       const credentials = await getCredentials();
       if (credentials.some(u => u.email === email)) {
         setAuthMode('forgot-password-reset');
       } else {
-        toast({ variant: 'destructive', title: t.error, description: t.emailNotRegistered });
+        setError(t.emailNotRegistered);
       }
     } catch (error: any) {
-      toast({ variant: 'destructive', title: t.error, description: error.message });
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -115,8 +126,9 @@ export default function LoginPage() {
 
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (newPassword !== confirmPassword) {
-      toast({ variant: 'destructive', title: t.passwordResetFailed, description: t.passwordsDoNotMatch });
+      setError(t.passwordsDoNotMatch);
       return;
     }
     setLoading(true);
@@ -125,7 +137,7 @@ export default function LoginPage() {
       toast({ title: t.passwordResetSuccess, description: t.passwordUpdatedSuccessfully });
       resetAndCloseDialog();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: t.passwordResetFailed, description: error.message });
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -138,6 +150,7 @@ export default function LoginPage() {
     setPassword('');
     setNewPassword('');
     setConfirmPassword('');
+    setError(null);
   };
 
   const openDialog = (mode: AuthMode) => {
@@ -147,6 +160,7 @@ export default function LoginPage() {
     setPassword('');
     setNewPassword('');
     setConfirmPassword('');
+    setError(null);
   }
 
   const renderDialogContent = () => {
@@ -159,6 +173,7 @@ export default function LoginPage() {
               <DialogDescription>{t.enterAdminCredentials}</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleAdminAuth}>
+                {error && <Alert variant="destructive" className="mb-4"><AlertDescription>{error}</AlertDescription></Alert>}
               <div className="grid gap-4 py-4">
                 <Input id="admin-email" type="email" placeholder={t.emailLabel} value={email} onChange={e => setEmail(e.target.value)} required />
                 <Input id="admin-password" type="password" placeholder={t.passwordLabel} value={password} onChange={e => setPassword(e.target.value)} required />
@@ -177,6 +192,7 @@ export default function LoginPage() {
               <DialogDescription>{t.enterNewUserDetails}</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleUserSignup}>
+                {error && <Alert variant="destructive" className="mb-4"><AlertDescription>{error}</AlertDescription></Alert>}
               <div className="grid gap-4 py-4">
                 <Input id="new-user-email" type="email" placeholder={t.emailLabel} value={email} onChange={e => setEmail(e.target.value)} required />
                 <Input id="new-user-password" type="password" placeholder={t.passwordLabel} value={password} onChange={e => setPassword(e.target.value)} required />
@@ -196,6 +212,7 @@ export default function LoginPage() {
                   <DialogDescription>{t.enterEmailToReset}</DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleForgotPasswordEmail}>
+                    {error && <Alert variant="destructive" className="mb-4"><AlertDescription>{error}</AlertDescription></Alert>}
                   <div className="grid gap-4 py-4">
                     <Input id="reset-email" type="email" placeholder={t.emailLabel} value={email} onChange={e => setEmail(e.target.value)} required />
                   </div>
@@ -213,6 +230,7 @@ export default function LoginPage() {
                     <DialogDescription>{t.enterNewPasswordFor(email)}</DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handlePasswordReset}>
+                    {error && <Alert variant="destructive" className="mb-4"><AlertDescription>{error}</AlertDescription></Alert>}
                     <div className="grid gap-4 py-4">
                     <Input id="new-password" type="password" placeholder={t.newPassword} value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
                     <Input id="confirm-new-password" type="password" placeholder={t.confirmPassword} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
@@ -260,6 +278,11 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {error && authMode === 'login' && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
               <form onSubmit={handleLogin}>
                 <div className="grid gap-4">
                   <div className="grid gap-2">
@@ -314,3 +337,5 @@ export default function LoginPage() {
     </div>
   )
 }
+
+    
