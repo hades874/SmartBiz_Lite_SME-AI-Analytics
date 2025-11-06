@@ -144,7 +144,7 @@ export async function getCustomers(): Promise<Customer[]> {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${CUSTOMER_SHEET_NAME}!A2:H`,
+      range: `${CUSTOMER_SHEET_NAME}!A2:J`,
     });
 
     const rows = response.data.values;
@@ -156,9 +156,10 @@ export async function getCustomers(): Promise<Customer[]> {
       email: row[2],
       firstPurchase: row[3],
       lastPurchase: row[4],
-      totalPurchases: parseInt(row[5], 10),
-      totalSpent: parseFloat(row[6]),
-      averageOrderValue: parseFloat(row[7]),
+      totalPurchases: parseInt(row[5], 10) || 0,
+      totalSpent: parseFloat(row[6]) || 0,
+      averageOrderValue: parseFloat(row[7]) || 0,
+      segment: (row[9] as Customer['segment']) || undefined,
     }));
   } catch (error) {
     console.error('Error fetching customers from Google Sheets:', error);

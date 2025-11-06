@@ -1,3 +1,4 @@
+
 'use server';
 // A customer segmentation AI agent.
 //
@@ -9,9 +10,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const CustomerSegmentationInputSchema = z.object({
-  customerData: z.array(
-    z.object({
+const CustomerInputSchema = z.object({
       id: z.string(),
       name: z.string(),
       phone: z.string().optional(),
@@ -21,8 +20,12 @@ const CustomerSegmentationInputSchema = z.object({
       totalPurchases: z.number(),
       totalSpent: z.number(),
       averageOrderValue: z.number(),
-    })
-  ).describe('An array of customer data objects.'),
+      // We don't need to send the existing segment to the AI
+      // segment: z.enum(['high-value', 'regular', 'at-risk', 'lost']).optional(),
+    });
+
+const CustomerSegmentationInputSchema = z.object({
+  customerData: z.array(CustomerInputSchema).describe('An array of customer data objects.'),
 });
 export type CustomerSegmentationInput = z.infer<typeof CustomerSegmentationInputSchema>;
 

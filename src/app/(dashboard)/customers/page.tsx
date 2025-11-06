@@ -25,6 +25,7 @@ export default function CustomersPage() {
 
     const fetchCustomers = async () => {
         setIsCustomerLoading(true);
+        setError(null);
         try {
             const data = await getCustomers();
             setCustomers(data);
@@ -44,16 +45,22 @@ export default function CustomersPage() {
         setError(null);
         setResult(null);
         try {
-            const res = await customerSegmentation({ customerData: customers });
-            setResult(res);
+            // Filter out customers that already have a segment
+            const customersToSegment = customers.filter(c => !c.segment);
+            if (customersToSegment.length > 0) {
+                 const res = await customerSegmentation({ customerData: customersToSegment });
+                 setResult(res);
+            } else {
+                setResult([]); // No customers to segment
+            }
         } catch (e: any) {
-            setError(e.message || "An error occurred.");
+            setError(e.message || "An error occurred during segmentation.");
         } finally {
             setLoading(false);
         }
     };
     
-    const getSegmentVariant = (segment: string) => {
+    const getSegmentVariant = (segment?: string) => {
         switch (segment) {
             case 'high-value':
                 return 'default';
@@ -69,15 +76,19 @@ export default function CustomersPage() {
     };
     
     const customersWithSegments = React.useMemo(() => {
-        if (!result) return customers;
         return customers.map(customer => {
-            const segmentInfo = result.find(r => r.id === customer.id);
-            return { ...customer, segment: segmentInfo?.segment };
+            const segmentInfo = result?.find(r => r.id === customer.id);
+            // If segmentation has run, use the new segment. Otherwise, use existing segment data.
+            const segment = segmentInfo ? segmentInfo.segment : customer.segment;
+            return { ...customer, segment };
         });
     }, [result, customers]);
     
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return "Invalid Date";
+        }
         if (language === 'bn') {
             return date.toLocaleDateString('bn-BD');
         }
@@ -100,7 +111,7 @@ export default function CustomersPage() {
                 </CardContent>
             </Card>
             
-            {(loading || isCustomerLoading) && (
+            {(isCustomerLoading) && (
                  <div className="flex items-center justify-center py-8">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                  </div>
@@ -139,7 +150,7 @@ export default function CustomersPage() {
                                         <TableCell>{formatDate(customer.lastPurchase)}</TableCell>
                                         <TableCell>
                                             {customer.segment ? (
-                                                <Badge variant={getSegmentVariant(customer.segment)} className={cn(customer.segment === 'high-value' && 'bg-green-600', 'capitalize')}>
+                                                <Badge variant={getSegmentVariant(customer.segment)} className={cn(customer.segment === 'high-value' && 'bg-green-600 text-white', 'capitalize')}>
                                                     {customer.segment.replace('-', ' ')}
                                                 </Badge>
                                             ) : (
