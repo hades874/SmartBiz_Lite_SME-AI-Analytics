@@ -114,9 +114,6 @@ export default function LoginPage() {
                       {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                       {t.loginButton}
                     </Button>
-                  <Button variant="outline" className="w-full" disabled={loading}>
-                    {t.loginWithGoogleButton}
-                  </Button>
                 </div>
               </form>
               <div className="mt-4 text-center text-sm">
