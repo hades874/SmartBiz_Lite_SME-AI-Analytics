@@ -66,9 +66,9 @@ export default function AgentPage() {
 
             const response = await askBusinessAgent({
                 query: input,
-                salesData: salesData,
-                inventoryData: inventoryData,
-                customerData: customerData,
+                salesData,
+                inventoryData,
+                customerData,
             });
             const aiMessage: Message = { id: `ai-${Date.now()}`, text: response.response, sender: 'ai' };
             setMessages(prev => [...prev, aiMessage]);

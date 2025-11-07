@@ -9,7 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { salesDataSchema, inventoryDataSchema, customerDataSchema, BusinessAgentInputSchema, BusinessAgentOutputSchema } from '@/lib/schemas';
+import { BusinessAgentInputSchema, BusinessAgentOutputSchema } from '@/lib/schemas';
 
 
 export type BusinessAgentInput = z.infer<typeof BusinessAgentInputSchema>;
