@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, Loader2, Send, User } from 'lucide-react';
 import { askBusinessAgent } from '@/ai/flows/business-agent';
 import { getSales, getInventory, getCustomers } from '@/lib/sheets';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useLanguage, strings } from '@/context/language-context';
 import { salesDataSchema, inventoryDataSchema, customerDataSchema } from '@/lib/schemas';
@@ -27,7 +26,6 @@ export default function AgentPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-    const userAvatar = PlaceHolderImages.find(p => p.id === 'avatar-1');
     const { language } = useLanguage();
     const t = strings[language];
 
@@ -117,7 +115,6 @@ export default function AgentPage() {
                                     </div>
                                     {message.sender === 'user' && (
                                         <Avatar className="h-9 w-9">
-                                            <AvatarImage src={userAvatar?.imageUrl} alt="User" />
                                             <AvatarFallback>
                                                 <User className="h-5 w-5" />
                                             </AvatarFallback>
