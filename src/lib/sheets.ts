@@ -198,6 +198,28 @@ export async function getSales(): Promise<SalesRecord[]> {
   }
 }
 
+// PENDING PAYMENTS FUNCTIONS
+const PENDING_PAYMENTS_SHEET_NAME = 'pendingPayments';
+
+export async function getPendingPayments(): Promise<number> {
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${PENDING_PAYMENTS_SHEET_NAME}!A1`,
+    });
+
+    const value = response.data.values?.[0]?.[0];
+    if (!value) return 0;
+    
+    // Remove any currency symbols or commas before parsing
+    const numericValue = value.replace(/[^0-9.-]+/g,"");
+    return parseFloat(numericValue) || 0;
+  } catch (error) {
+    console.error('Error fetching pending payments from Google Sheets:', error);
+    throw new Error('Failed to fetch pending payments data.');
+  }
+}
+
 
 // CREDENTIALS FUNCTIONS
 const CREDENTIALS_SHEET_NAME = 'credentials';

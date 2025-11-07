@@ -6,7 +6,7 @@ import { RecentSales } from '@/components/dashboard/recent-sales'
 import { InventoryAlerts } from '@/components/dashboard/inventory-alerts'
 import { useLanguage, strings } from '@/context/language-context';
 import React from 'react';
-import { getSales, getCustomers, getInventory } from '@/lib/sheets';
+import { getSales, getCustomers, getInventory, getPendingPayments } from '@/lib/sheets';
 import { SalesRecord, Customer, InventoryItem } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
@@ -19,20 +19,23 @@ export default function DashboardPage() {
   const [sales, setSales] = React.useState<SalesRecord[]>([]);
   const [customers, setCustomers] = React.useState<Customer[]>([]);
   const [inventory, setInventory] = React.useState<InventoryItem[]>([]);
+  const [pendingPayments, setPendingPayments] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     async function fetchData() {
         try {
             setLoading(true);
-            const [salesData, customerData, inventoryData] = await Promise.all([
+            const [salesData, customerData, inventoryData, pendingPaymentsData] = await Promise.all([
                 getSales(),
                 getCustomers(),
                 getInventory(),
+                getPendingPayments(),
             ]);
             setSales(salesData);
             setCustomers(customerData);
             setInventory(inventoryData);
+            setPendingPayments(pendingPaymentsData);
         } catch (err: any) {
             setError(err.message || 'Failed to load dashboard data.');
         } finally {
@@ -44,7 +47,6 @@ export default function DashboardPage() {
 
   const totalRevenue = React.useMemo(() => sales.reduce((acc, sale) => acc + sale.totalAmount, 0), [sales]);
   const stockValue = React.useMemo(() => inventory.reduce((acc, item) => acc + (item.currentStock * item.costPrice), 0), [inventory]);
-  const pendingPayments = React.useMemo(() => sales.filter(s => s.paymentStatus === 'pending').reduce((acc, sale) => acc + sale.totalAmount, 0), [sales]);
 
 
   if (loading) {
@@ -84,7 +86,7 @@ export default function DashboardPage() {
             <StatCard 
                 title={t.pendingPayments}
                 value={formatCurrency(pendingPayments, language)}
-                description={t.pendingPaymentsDescription}
+                description={"Total outstanding amount"}
                 Icon={CreditCard}
             />
         </div>
