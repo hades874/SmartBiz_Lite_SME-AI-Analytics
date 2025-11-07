@@ -13,6 +13,7 @@ import { getSales, getInventory, getCustomers } from '@/lib/sheets';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useLanguage, strings } from '@/context/language-context';
+import { salesDataSchema, inventoryDataSchema, customerDataSchema } from '@/lib/schemas';
 
 interface Message {
     id: string;
@@ -63,16 +64,23 @@ export default function AgentPage() {
                 getInventory(),
                 getCustomers(),
             ]);
+            
+            // Validate and filter data
+            const validatedSales = salesData.filter(item => salesDataSchema.safeParse(item).success);
+            const validatedInventory = inventoryData.filter(item => inventoryDataSchema.safeParse(item).success);
+            const validatedCustomers = customerData.filter(item => customerDataSchema.safeParse(item).success);
+
 
             const response = await askBusinessAgent({
                 query: input,
-                salesData,
-                inventoryData,
-                customerData,
+                salesData: validatedSales,
+                inventoryData: validatedInventory,
+                customerData: validatedCustomers,
             });
             const aiMessage: Message = { id: `ai-${Date.now()}`, text: response.response, sender: 'ai' };
             setMessages(prev => [...prev, aiMessage]);
         } catch (err: any) {
+            console.error(err);
             setError(err.message || "Sorry, I couldn't process that request.");
             const errorMessage: Message = { id: `err-${Date.now()}`, text: t.agentErrorConnecting, sender: 'ai' };
             setMessages(prev => [...prev, errorMessage]);
