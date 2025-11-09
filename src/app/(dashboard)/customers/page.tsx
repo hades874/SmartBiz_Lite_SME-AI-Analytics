@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { cn, formatCurrency, toBengaliNumber } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useLanguage, strings } from "@/context/language-context";
 
 export default function CustomersPage() {
@@ -46,7 +46,12 @@ export default function CustomersPage() {
         setResult(null);
         try {
             // Filter out customers that already have a segment
-            const customersToSegment = customers.filter(c => !c.segment);
+            const customersToSegment = customers.filter(c => !c.segment).map(c => ({
+                ...c,
+                firstPurchase: c.firstPurchase || '',
+                lastPurchase: c.lastPurchase || '',
+            }));
+
             if (customersToSegment.length > 0) {
                  const res = await customerSegmentation({ customerData: customersToSegment });
                  setResult(res);
