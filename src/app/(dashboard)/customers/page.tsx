@@ -87,12 +87,8 @@ export default function CustomersPage() {
     const formatDate = (dateString: string | null | undefined) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
-        // Check if the date is the epoch date, which we use as a fallback for invalid/empty dates
-        if (date.getTime() === 0) {
-            return 'N/A';
-        }
         if (isNaN(date.getTime())) {
-            return 'Invalid Date';
+            return 'N/A';
         }
         return date.toLocaleDateString(language === 'bn' ? 'bn-BD' : 'en-US', {
             year: 'numeric',

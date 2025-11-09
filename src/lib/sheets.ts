@@ -157,9 +157,9 @@ export async function deleteInventoryItem(id: string): Promise<void> {
 // CUSTOMER FUNCTIONS
 const CUSTOMER_SHEET_NAME = 'Customers';
 
-const parseSheetDate = (dateValue: any): string => {
+const parseSheetDate = (dateValue: any): string | null => {
     if (!dateValue && dateValue !== 0) {
-      return new Date(0).toISOString();
+      return null;
     }
   
     // Handle Google Sheet's date serial number format.
@@ -169,20 +169,20 @@ const parseSheetDate = (dateValue: any): string => {
       const daysSinceEpoch = dateValue - excelEpoch;
       const millisecondsSinceEpoch = daysSinceEpoch * 24 * 60 * 60 * 1000;
       const date = new Date(millisecondsSinceEpoch);
-      return date.toISOString();
+      // Check if the parsed date is valid before returning
+      return !isNaN(date.getTime()) ? date.toISOString() : null;
     }
   
     // Handle string dates (e.g., 'YYYY-MM-DD', 'MM/DD/YYYY')
     if (typeof dateValue === 'string') {
-      // Allow browsers to attempt parsing, as it handles many formats.
       const date = new Date(dateValue);
       if (!isNaN(date.getTime())) {
         return date.toISOString();
       }
     }
   
-    // If parsing fails, return epoch as a fallback to prevent crashes.
-    return new Date(0).toISOString();
+    // If all parsing fails, return null
+    return null;
   };
 
 
@@ -230,7 +230,7 @@ export async function getSales(): Promise<SalesRecord[]> {
     
     return rows.map(row => ({
       id: row[0],
-      date: parseSheetDate(row[1]),
+      date: parseSheetDate(row[1]) || new Date(0).toISOString(),
       productName: row[2],
       productId: row[3],
       quantity: parseInt(row[4], 10),

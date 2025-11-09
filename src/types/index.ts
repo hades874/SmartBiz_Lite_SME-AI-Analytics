@@ -44,8 +44,8 @@ export interface SalesRecord {
     name: string;
     phone?: string;
     email?: string;
-    firstPurchase: string;
-    lastPurchase: string;
+    firstPurchase: string | null;
+    lastPurchase: string | null;
     totalPurchases: number;
     totalSpent: number;
     averageOrderValue: number;
