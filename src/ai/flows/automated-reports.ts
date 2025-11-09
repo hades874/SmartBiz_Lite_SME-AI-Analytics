@@ -20,7 +20,14 @@ const GenerateReportInputSchema = z.object({
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
 
 const GenerateReportOutputSchema = z.object({
-  report: z.string().describe('The generated business performance report.'),
+    summary: z.string().describe('A brief summary of the business performance for the period.'),
+    keyMetrics: z.array(z.object({
+        metric: z.string().describe('The name of the key metric (e.g., Total Revenue).'),
+        value: z.string().describe('The value of the metric (e.g., "৳50,000").'),
+        change: z.string().optional().describe('The change from the previous period (e.g., "+5%").')
+    })).describe('An array of key performance metrics.'),
+    actionItems: z.array(z.string()).describe('A list of recommended action items.'),
+    recommendations: z.array(z.string()).describe('A list of strategic recommendations.'),
 });
 export type GenerateReportOutput = z.infer<typeof GenerateReportOutputSchema>;
 
@@ -32,7 +39,7 @@ const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
-  prompt: `You are a business analyst for SMEs in Bangladesh. Generate a business performance report based on the following data for the specified period. Your response must be in the Bangla language and tailored for a Bangladeshi audience.\n\nReport Period: {{{reportPeriod}}}\n\nSales Data: {{{salesData}}}\n\nInventory Data: {{{inventoryData}}}\n\nPayment Data: {{{paymentData}}}\n\nCustomer Data: {{{customerData}}}\n\nProvide a concise and informative report including key metrics, action items, and recommendations. The report should be well structured and easy to understand.\n\nFormat the output as a string.
+  prompt: `You are a business analyst for SMEs in Bangladesh. Generate a business performance report based on the following data for the specified period. Your response must be in the Bangla language and tailored for a Bangladeshi audience.\n\nReport Period: {{{reportPeriod}}}\n\nSales Data: {{{salesData}}}\n\nInventory Data: {{{inventoryData}}}\n\nPayment Data: {{{paymentData}}}\n\nCustomer Data: {{{customerData}}}\n\nProvide a concise and informative report including key metrics, action items, and recommendations. The report should be well structured and easy to understand.\n\nFormat the output as a JSON object with 'summary', 'keyMetrics', 'actionItems', and 'recommendations' fields.
 `,
 });
 

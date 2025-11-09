@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { generateReport, type GenerateReportOutput } from "@/ai/flows/automated-reports";
 import React from "react";
 import { getSales, getInventory, getCustomers } from "@/lib/sheets";
-import { Loader2 } from "lucide-react";
+import { Loader2, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage, strings } from "@/context/language-context";
@@ -43,6 +43,13 @@ export default function ReportsPage() {
         }
     };
     
+    const getChangeIcon = (change?: string) => {
+        if (!change) return <Minus className="h-4 w-4 text-gray-500" />;
+        if (change.startsWith('+')) return <TrendingUp className="h-4 w-4 text-green-500" />;
+        if (change.startsWith('-')) return <TrendingDown className="h-4 w-4 text-red-500" />;
+        return <Minus className="h-4 w-4 text-gray-500" />;
+    };
+
     return (
         <div className="space-y-6">
             <Card>
@@ -81,14 +88,58 @@ export default function ReportsPage() {
             )}
 
             {result && (
-                <Card>
-                    <CardHeader>
-                         <CardTitle>{t.generatedReportTitle(reportPeriod)}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <pre className="p-4 bg-muted rounded-md text-sm whitespace-pre-wrap font-sans">{result.report}</pre>
-                    </CardContent>
-                </Card>
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>{t.generatedReportTitle(reportPeriod)}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                             <p className="text-muted-foreground">{result.summary}</p>
+                        </CardContent>
+                    </Card>
+
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                         {result.keyMetrics.map(metric => (
+                            <Card key={metric.metric}>
+                                <CardHeader className="pb-2">
+                                    <CardDescription>{metric.metric}</CardDescription>
+                                    <CardTitle className="text-3xl">{metric.value}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {metric.change && (
+                                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                            {getChangeIcon(metric.change)}
+                                            {metric.change} from last period
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <Card>
+                             <CardHeader>
+                                <CardTitle>{t.aiRecommendations}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ul className="space-y-2 list-disc list-inside text-sm">
+                                    {result.recommendations.map((item, index) => <li key={`rec-${index}`}>{item}</li>)}
+                                </ul>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                             <CardHeader>
+                                <CardTitle>{t.actionItems}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ul className="space-y-2 list-disc list-inside text-sm">
+                                    {result.actionItems.map((item, index) => <li key={`action-${index}`}>{item}</li>)}
+                                </ul>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
             )}
         </div>
     );
