@@ -157,6 +157,33 @@ export async function deleteInventoryItem(id: string): Promise<void> {
 // CUSTOMER FUNCTIONS
 const CUSTOMER_SHEET_NAME = 'Customers';
 
+// Helper function to parse dates from sheets.
+// Google Sheets dates might come as strings 'YYYY-MM-DD' or serial numbers.
+// This function handles both and returns an ISO string.
+const parseSheetDate = (dateValue: any): string => {
+    if (!dateValue) {
+      return new Date(0).toISOString(); // Return epoch if empty to avoid errors
+    }
+    // Check if it's a number (Excel/Sheets date serial number)
+    if (typeof dateValue === 'number' && dateValue > 0) {
+      // Excel's epoch starts on 1900-01-01, but has a bug treating 1900 as a leap year.
+      // The conversion is (dateValue - 25569) * 86400 * 1000.
+      const utc_days = dateValue - 25569;
+      const utc_value = utc_days * 86400;
+      const date_info = new Date(utc_value * 1000);
+      return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate()).toISOString();
+    }
+    // If it's a string, try creating a date from it.
+    // This will handle 'YYYY-MM-DD' and other standard formats.
+    const date = new Date(dateValue);
+    if (!isNaN(date.getTime())) {
+      return date.toISOString();
+    }
+    // Return epoch if all else fails
+    return new Date(0).toISOString();
+};
+
+
 export async function getCustomers(): Promise<Customer[]> {
   try {
     const sheets = await getSheetsClient();
@@ -172,8 +199,8 @@ export async function getCustomers(): Promise<Customer[]> {
       id: row[0],
       name: row[1],
       email: row[2],
-      firstPurchase: row[3],
-      lastPurchase: row[4],
+      firstPurchase: parseSheetDate(row[3]),
+      lastPurchase: parseSheetDate(row[4]),
       totalPurchases: parseInt(row[5], 10) || 0,
       totalSpent: parseFloat(row[6]) || 0,
       averageOrderValue: parseFloat(row[7]) || 0,
@@ -329,3 +356,5 @@ export async function updatePassword(email: string, newPassword: string): Promis
         throw new Error(error.message || 'Failed to update password.');
     }
 }
+
+    
