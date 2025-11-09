@@ -45,7 +45,8 @@ export default function CustomersPage() {
         setError(null);
         setResult(null);
         try {
-            const customersToSegment = customers.map(c => ({
+            // Omit the 'segment' property before sending to the AI
+            const customersToSegment = customers.map(({ segment, ...c }) => ({
                 ...c,
                 firstPurchase: c.firstPurchase || null,
                 lastPurchase: c.lastPurchase || null,
