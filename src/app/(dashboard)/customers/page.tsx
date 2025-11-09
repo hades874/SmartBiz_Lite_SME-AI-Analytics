@@ -7,7 +7,7 @@ import { customerSegmentation, type CustomerSegmentationOutput } from "@/ai/flow
 import React from "react";
 import { getCustomers } from "@/lib/sheets";
 import type { Customer } from "@/types";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lightbulb, Target, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -45,18 +45,17 @@ export default function CustomersPage() {
         setError(null);
         setResult(null);
         try {
-            // Filter out customers that already have a segment
-            const customersToSegment = customers.filter(c => !c.segment).map(c => ({
+            const customersToSegment = customers.map(c => ({
                 ...c,
-                firstPurchase: c.firstPurchase || '',
-                lastPurchase: c.lastPurchase || '',
+                firstPurchase: c.firstPurchase || null,
+                lastPurchase: c.lastPurchase || null,
             }));
 
             if (customersToSegment.length > 0) {
                  const res = await customerSegmentation({ customerData: customersToSegment });
                  setResult(res);
             } else {
-                setResult([]); // No customers to segment
+                setResult(null);
             }
         } catch (e: any) {
             setError(e.message || "An error occurred during segmentation.");
@@ -81,9 +80,9 @@ export default function CustomersPage() {
     };
     
     const customersWithSegments = React.useMemo(() => {
+        if (!result) return customers;
         return customers.map(customer => {
-            const segmentInfo = result?.find(r => r.id === customer.id);
-            // If segmentation has run, use the new segment. Otherwise, use existing segment data.
+            const segmentInfo = result.segments.find(r => r.id === customer.id);
             const segment = segmentInfo ? segmentInfo.segment : customer.segment;
             return { ...customer, segment };
         });
@@ -105,7 +104,7 @@ export default function CustomersPage() {
                 </CardContent>
             </Card>
             
-            {(isCustomerLoading) && (
+            {loading && (
                  <div className="flex items-center justify-center py-8">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                  </div>
@@ -118,7 +117,48 @@ export default function CustomersPage() {
                 </Alert>
             )}
 
-            {!isCustomerLoading && !error && (
+            {result && (
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>AI Analysis Summary</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground">{result.summary}</p>
+                        </CardContent>
+                    </Card>
+
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Lightbulb /> Observations</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ul className="space-y-2 list-disc list-inside">
+                                    {result.observations.map((item, index) => <li key={`obs-${index}`}>{item}</li>)}
+                                </ul>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Target /> Recommendations</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ul className="space-y-2 list-disc list-inside">
+                                    {result.recommendations.map((item, index) => <li key={`rec-${index}`}>{item}</li>)}
+                                </ul>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            )}
+
+
+            {isCustomerLoading && !customers.length ? (
+                 <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                 </div>
+            ) : !isCustomerLoading && !error && (
                 <Card>
                     <CardHeader>
                         <CardTitle>{t.customerList}</CardTitle>
